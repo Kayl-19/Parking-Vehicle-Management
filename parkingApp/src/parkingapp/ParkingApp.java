@@ -102,5 +102,14 @@ public class ParkingApp {
                 }
                 return null;
             }
+        
+    
+
+if (current.data.getPlateNumber().equalsIgnoreCase(query) || 
+    current.data.getSpotId().equalsIgnoreCase(query) ||
+    current.data.getOwnerName().equalsIgnoreCase(query) ||
+    current.data.getVehicleType().equalsIgnoreCase(query)) {
+    return current.data;
+}
 
         }
