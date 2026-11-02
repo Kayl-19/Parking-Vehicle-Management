@@ -240,4 +240,13 @@ abstract class Vehicle {
                     return customType;
                 }
             }
+
+            private void promptAddNewType() {
+                String newType = JOptionPane.showInputDialog(this, "Enter new Vehicle Type:", "Add Vehicle Type", JOptionPane.QUESTION_MESSAGE);
+                if (newType != null && !newType.trim().isEmpty()) {
+                    int insertIndex = typeModel.getSize() - 1;
+                    typeModel.insertElementAt(newType.trim(), insertIndex);
+                    cbType.setSelectedItem(newType.trim());
+                }
+            }
         }
