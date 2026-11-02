@@ -9,91 +9,188 @@ package parkingapp;
  * @author kyle
  */
 // Added in Commit 6: Declare input form components and fields
+// Added in Commit 8: Buttons, table setup, and record addition/deletion handlers
+// Added in Commit 9: Search UI components and performSearch execution logic
   
 
-    // Added in Commit 8: Buttons, table setup, and record addition/deletion handlers
-public class ParkingApp extends JFrame {
-    private CustomDoublyLinkedList parkingList;
+    public class ParkingApp extends JFrame {
 
-    private JTextField txtPlate, txtOwner, txtSpot, txtNotes, txtSearch;
-    private JComboBox<String> cbType;
-    private DefaultComboBoxModel<String> typeModel;
-    private JLabel lblStatus;
-    private JTable tableRecords;
-    private DefaultTableModel tableModel;
+        private CustomDoublyLinkedList parkingList;
 
-    public ParkingApp() {
-        parkingList = new CustomDoublyLinkedList();
+        private JTextField txtPlate, txtOwner, txtSpot, txtNotes, txtSearch;
+        private JComboBox<String> cbType;
+        private DefaultComboBoxModel<String> typeModel;
+        private JLabel lblStatus;
+        private JTable tableRecords;
+        private DefaultTableModel tableModel;
 
-        setTitle("Parking Vehicle Management System");
-        setSize(880, 620);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setLayout(new BorderLayout(10, 10));
+        public ParkingApp() {
+            parkingList = new CustomDoublyLinkedList();
 
-        // West Form Panel
-        JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setBorder(BorderFactory.createTitledBorder("Park New Vehicle"));
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+            setTitle("Parking Vehicle Management System");
+            setSize(880, 620);
+            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            setLocationRelativeTo(null);
+            setLayout(new BorderLayout(10, 10));
 
-        gbc.gridx = 0; gbc.gridy = 0;
-        formPanel.add(new JLabel("Plate Number:"), gbc);
-        gbc.gridx = 1;
-        txtPlate = new JTextField(12);
-        formPanel.add(txtPlate, gbc);
+            // --- TOP PANEL: Search Control ---
+            JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+            searchPanel.setBorder(BorderFactory.createTitledBorder("Search Vehicle (IT20 Manual Linear Search)"));
 
-        gbc.gridx = 0; gbc.gridy = 1;
-        formPanel.add(new JLabel("Owner Name:"), gbc);
-        gbc.gridx = 1;
-        txtOwner = new JTextField(12);
-        formPanel.add(txtOwner, gbc);
+            searchPanel.add(new JLabel("Plate / Spot / Owner / Type:"));
+            txtSearch = new JTextField(15);
+            searchPanel.add(txtSearch);
 
-        gbc.gridx = 0; gbc.gridy = 2;
-        formPanel.add(new JLabel("Spot ID:"), gbc);
-        gbc.gridx = 1;
-        txtSpot = new JTextField(12);
-        formPanel.add(txtSpot, gbc);
+            JButton btnSearch = new JButton("Search");
+            JButton btnResetSearch = new JButton("Show All");
+            searchPanel.add(btnSearch);
+            searchPanel.add(btnResetSearch);
 
-        gbc.gridx = 0; gbc.gridy = 3;
-        formPanel.add(new JLabel("Vehicle Type:"), gbc);
-        gbc.gridx = 1;
-        typeModel = new DefaultComboBoxModel<>(new String[]{"Car", "Motorcycle", "Truck", "+ Add New Type..."});
-        cbType = new JComboBox<>(typeModel);
-        formPanel.add(cbType, gbc);
+            lblStatus = new JLabel(" Status: Ready");
+            lblStatus.setFont(new Font("SansSerif", Font.BOLD, 12));
+            searchPanel.add(lblStatus);
 
-        gbc.gridx = 0; gbc.gridy = 4;
-        formPanel.add(new JLabel("Notes/Details:"), gbc);
-        gbc.gridx = 1;
-        txtNotes = new JTextField(12);
-        formPanel.add(txtNotes, gbc);
+            add(searchPanel, BorderLayout.NORTH);
 
-        gbc.gridx = 0; gbc.gridy = 5; gbc.gridwidth = 2;
-        JButton btnAdd = new JButton("Park Vehicle");
-        formPanel.add(btnAdd, gbc);
+            // --- WEST PANEL: Form Inputs ---
+            JPanel formPanel = new JPanel(new GridBagLayout());
+            formPanel.setBorder(BorderFactory.createTitledBorder("Park New Vehicle"));
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(5, 5, 5, 5);
+            gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        gbc.gridy = 6;
-        JButton btnDelete = new JButton("Unpark Selected/Plate");
-        formPanel.add(btnDelete, gbc);
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            formPanel.add(new JLabel("Plate Number:"), gbc);
+            gbc.gridx = 1;
+            txtPlate = new JTextField(12);
+            formPanel.add(txtPlate, gbc);
 
-        add(formPanel, BorderLayout.WEST);
+            gbc.gridx = 0;
+            gbc.gridy = 1;
+            formPanel.add(new JLabel("Owner Name:"), gbc);
+            gbc.gridx = 1;
+            txtOwner = new JTextField(12);
+            formPanel.add(txtOwner, gbc);
 
-        // Center Panel: JTable setup
-        String[] columns = {"Plate Number", "Owner Name", "Spot ID", "Type", "Notes / Details"};
-        tableModel = new DefaultTableModel(columns, 0);
-        tableRecords = new JTable(tableModel);
-        add(new JScrollPane(tableRecords), BorderLayout.CENTER);
+            gbc.gridx = 0;
+            gbc.gridy = 2;
+            formPanel.add(new JLabel("Spot ID:"), gbc);
+            gbc.gridx = 1;
+            txtSpot = new JTextField(12);
+            formPanel.add(txtSpot, gbc);
 
-        lblStatus = new JLabel(" Status: Ready");
-        lblStatus.setFont(new Font("SansSerif", Font.BOLD, 12));
-        add(lblStatus, BorderLayout.SOUTH);
+            gbc.gridx = 0;
+            gbc.gridy = 3;
+            formPanel.add(new JLabel("Vehicle Type:"), gbc);
+            gbc.gridx = 1;
+            typeModel = new DefaultComboBoxModel<>(new String[]{"Car", "Motorcycle", "Truck", "+ Add New Type..."});
+            cbType = new JComboBox<>(typeModel);
+            formPanel.add(cbType, gbc);
 
-        // Event Listeners for Commit 8
-        btnAdd.addActionListener(e -> addRecord());
-        btnDelete.addActionListener(e -> deleteRecord());
+            gbc.gridx = 0;
+            gbc.gridy = 4;
+            formPanel.add(new JLabel("Notes/Details:"), gbc);
+            gbc.gridx = 1;
+            txtNotes = new JTextField(12);
+            formPanel.add(txtNotes, gbc);
 
-        refreshTableData(parkingList.toArray());
+            gbc.gridx = 0;
+            gbc.gridy = 5;
+            gbc.gridwidth = 2;
+            JButton btnAdd = new JButton("Park Vehicle");
+            formPanel.add(btnAdd, gbc);
+
+            gbc.gridy = 6;
+            JButton btnDelete = new JButton("Unpark Selected/Plate");
+            formPanel.add(btnDelete, gbc);
+
+            add(formPanel, BorderLayout.WEST);
+
+            // --- CENTER PANEL: Table Display ---
+            String[] columns = {"Plate Number", "Owner Name", "Spot ID", "Type", "Notes / Details"};
+            tableModel = new DefaultTableModel(columns, 0);
+            tableRecords = new JTable(tableModel);
+            add(new JScrollPane(tableRecords), BorderLayout.CENTER);
+
+            // Action Listeners
+            btnAdd.addActionListener(e -> addRecord());
+            btnDelete.addActionListener(e -> deleteRecord());
+            btnSearch.addActionListener(e -> performSearch());
+            btnResetSearch.addActionListener(e -> refreshTableData(parkingList.toArray()));
+
+            refreshTableData(parkingList.toArray());
+        }
+
+        private void performSearch() {
+            String query = txtSearch.getText().trim();
+            if (query.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Enter a search query.", "Input Required", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            Vehicle result = parkingList.search(query);
+            if (result != null) {
+                refreshTableData(new Vehicle[]{result});
+                lblStatus.setText(" Status: Found vehicle '" + query + "'");
+                lblStatus.setForeground(new Color(0, 128, 0));
+            } else {
+                tableModel.setRowCount(0);
+                lblStatus.setText(" Status: No match found for '" + query + "'");
+                lblStatus.setForeground(Color.RED);
+            }
+        }
+
+        private void refreshTableData(Vehicle[] vehicles) {
+            tableModel.setRowCount(0);
+            for (Vehicle v : vehicles) {
+                tableModel.addRow(new Object[]{
+                    v.getPlateNumber(),
+                    v.getOwnerName(),
+                    v.getSpotId(),
+                    v.getVehicleType(),
+                    v.getNotes()
+                });
+            }
+        }
+
+        private void addRecord() {
+            String plate = txtPlate.getText().trim();
+            String owner = txtOwner.getText().trim();
+            String spot = txtSpot.getText().trim();
+            String selectedType = (String) cbType.getSelectedItem();
+            String notes = txtNotes.getText().trim();
+
+            if (selectedType.equals("Car")) {
+                parkingList.add(new Car(plate, owner, spot, notes));
+            } else if (selectedType.equals("Motorcycle")) {
+                parkingList.add(new Motorcycle(plate, owner, spot, notes));
+            } else {
+                parkingList.add(new CustomVehicle(plate, owner, spot, selectedType, notes));
+            }
+
+            refreshTableData(parkingList.toArray());
+            clearInputs();
+        }
+
+        private void deleteRecord() {
+            int selectedRow = tableRecords.getSelectedRow();
+            String plateToRemove = (selectedRow != -1) ? tableModel.getValueAt(selectedRow, 0).toString() : txtPlate.getText().trim();
+            parkingList.removeByPlate(plateToRemove);
+            refreshTableData(parkingList.toArray());
+            clearInputs();
+        }
+
+        private void clearInputs() {
+            txtPlate.setText("");
+            txtOwner.setText("");
+            txtSpot.setText("");
+            txtNotes.setText("");
+        }
+
+        public static void main(String[] args) {
+            SwingUtilities.invokeLater(() -> new ParkingApp().setVisible(true));
+        }
     }
 
     private void refreshTableData(Vehicle[] vehicles) {
@@ -146,11 +243,13 @@ public class ParkingApp extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new ParkingApp().setVisible(true));
     }
-}
+
+    }
 
         public static void main(String[] args) {
-            SwingUtilities.invokeLater(() -> new ParkingApp().setVisible(true));
-        }
+        SwingUtilities.invokeLater(() -> new ParkingApp().setVisible(true));
+    }
+
     }
 
     public static void main(String[] args) {
