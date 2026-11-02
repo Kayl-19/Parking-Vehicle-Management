@@ -57,6 +57,17 @@ public class ParkingApp {
                         }
 
                         if (current.next != null) {
+                            class Car extends Vehicle {
+
+                                public Car(String plateNumber, String ownerName, String spotId, String notes) {
+                                    super(plateNumber, ownerName, spotId, notes);
+                                }
+
+                                @Override
+                                public String getVehicleType() {
+                                    return "Car";
+                                }
+                            }
                             current.next.prev = current.prev;
                         } else {
                             tail = current.prev;
@@ -111,5 +122,17 @@ abstract class Vehicle {
                 // Getters and setters omitted for brevity...
 
                 public abstract String getVehicleType();
+            }
+
+            class Car extends Vehicle {
+
+                public Car(String plateNumber, String ownerName, String spotId, String notes) {
+                    super(plateNumber, ownerName, spotId, notes);
+                }
+
+                @Override
+                public String getVehicleType() {
+                    return "Car";
+                }
             }
         }
