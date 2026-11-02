@@ -67,5 +67,17 @@ public class ParkingApp {
                         } else {
                             head = current.next; // Head update
                         }
-
+                        if (current.next != null) {
+                            current.next.prev = current.prev;
+                        } else {
+                            tail = current.prev; // Tail update
+                        }
+                        size--;
+                        return true;
                     }
+                    current = current.next;
+                }
+                return false;
+            }
+
+        }
