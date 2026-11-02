@@ -8,13 +8,33 @@ package parkingapp;
  *
  * @author kyle
  */
-public class ParkingApp {
+  
 
-    /**
-     * @param args the command line arguments
-     */
+    public class ParkingApp extends JFrame {
+
+        private CustomDoublyLinkedList parkingList;
+        private JLabel lblStatus;
+
+        public ParkingApp() {
+            parkingList = new CustomDoublyLinkedList();
+
+            setTitle("Parking Vehicle Management System");
+            setSize(880, 620);
+            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            setLocationRelativeTo(null);
+            setLayout(new BorderLayout(10, 10));
+
+            lblStatus = new JLabel(" Status: Ready");
+            lblStatus.setFont(new Font("SansSerif", Font.BOLD, 12));
+            add(lblStatus, BorderLayout.SOUTH);
+        }
+
+        public static void main(String[] args) {
+            SwingUtilities.invokeLater(() -> new ParkingApp().setVisible(true));
+        }
+    }
+
     public static void main(String[] args) {
-        // TODO code application logic here
         class Node {
 
             Vehicle data;
