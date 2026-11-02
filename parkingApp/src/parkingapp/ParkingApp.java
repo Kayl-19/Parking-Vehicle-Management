@@ -8,12 +8,19 @@ package parkingapp;
  *
  * @author kyle
  */
+// Added in Commit 6: Declare input form components and fields
   
 
     public class ParkingApp extends JFrame {
 
         private CustomDoublyLinkedList parkingList;
+
+        private JTextField txtPlate, txtOwner, txtSpot, txtNotes, txtSearch;
+        private JComboBox<String> cbType;
+        private DefaultComboBoxModel<String> typeModel;
         private JLabel lblStatus;
+        private JTable tableRecords;
+        private DefaultTableModel tableModel;
 
         public ParkingApp() {
             parkingList = new CustomDoublyLinkedList();
@@ -24,6 +31,51 @@ package parkingapp;
             setLocationRelativeTo(null);
             setLayout(new BorderLayout(10, 10));
 
+            // --- WEST PANEL: Form Inputs (GridBagLayout) ---
+            JPanel formPanel = new JPanel(new GridBagLayout());
+            formPanel.setBorder(BorderFactory.createTitledBorder("Park New Vehicle"));
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(5, 5, 5, 5);
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            formPanel.add(new JLabel("Plate Number:"), gbc);
+            gbc.gridx = 1;
+            txtPlate = new JTextField(12);
+            formPanel.add(txtPlate, gbc);
+
+            gbc.gridx = 0;
+            gbc.gridy = 1;
+            formPanel.add(new JLabel("Owner Name:"), gbc);
+            gbc.gridx = 1;
+            txtOwner = new JTextField(12);
+            formPanel.add(txtOwner, gbc);
+
+            gbc.gridx = 0;
+            gbc.gridy = 2;
+            formPanel.add(new JLabel("Spot ID:"), gbc);
+            gbc.gridx = 1;
+            txtSpot = new JTextField(12);
+            formPanel.add(txtSpot, gbc);
+
+            gbc.gridx = 0;
+            gbc.gridy = 3;
+            formPanel.add(new JLabel("Vehicle Type:"), gbc);
+            gbc.gridx = 1;
+            typeModel = new DefaultComboBoxModel<>(new String[]{"Car", "Motorcycle", "Truck", "+ Add New Type..."});
+            cbType = new JComboBox<>(typeModel);
+            formPanel.add(cbType, gbc);
+
+            gbc.gridx = 0;
+            gbc.gridy = 4;
+            formPanel.add(new JLabel("Notes/Details:"), gbc);
+            gbc.gridx = 1;
+            txtNotes = new JTextField(12);
+            formPanel.add(txtNotes, gbc);
+
+            add(formPanel, BorderLayout.WEST);
+
             lblStatus = new JLabel(" Status: Ready");
             lblStatus.setFont(new Font("SansSerif", Font.BOLD, 12));
             add(lblStatus, BorderLayout.SOUTH);
@@ -32,6 +84,12 @@ package parkingapp;
         public static void main(String[] args) {
             SwingUtilities.invokeLater(() -> new ParkingApp().setVisible(true));
         }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new ParkingApp().setVisible(true));
+    }
+
     }
 
     public static void main(String[] args) {
