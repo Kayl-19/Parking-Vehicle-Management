@@ -16,16 +16,35 @@ public class ParkingApp {
     public static void main(String[] args) {
         // TODO code application logic here
         class Node {
-    Vehicle data;
-    Node prev;
-    Node next;
 
-    public Node(Vehicle data) {
-        this.data = data;
-        this.prev = null;
-        this.next = null;
-    
+            Vehicle data;
+            Node prev;
+            Node next;
 
-    }
+            public Node(Vehicle data) {
+                this.data = data;
+                this.prev = null;
+                this.next = null;
+
+            }
+
+            class CustomDoublyLinkedList {
+
+                private Node head;
+                private Node tail;
+                private int size;
+
+                public CustomDoublyLinkedList() {
+                    this.head = null;
+                    this.tail = null;
+                    this.size = 0;
+                }
+
+                public int getSize() {
+                    return size;
+                }
+            }
+
+        
     
 }
