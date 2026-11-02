@@ -92,14 +92,24 @@ public class ParkingApp {
                 return null;
             }
 
-        
-    
-
-if (current.data.getPlateNumber().equalsIgnoreCase(query) || 
+            if (current.data.getPlateNumber().equalsIgnoreCase(query) || 
     current.data.getSpotId().equalsIgnoreCase(query) ||
     current.data.getOwnerName().equalsIgnoreCase(query) ||
     current.data.getVehicleType().equalsIgnoreCase(query)) {
     return current.data;
 }
+abstract class Vehicle {
 
+                private String plateNumber, ownerName, spotId, notes;
+
+                public Vehicle(String plateNumber, String ownerName, String spotId, String notes) {
+                    this.plateNumber = plateNumber;
+                    this.ownerName = ownerName;
+                    this.spotId = spotId;
+                    this.notes = notes;
+                }
+                // Getters and setters omitted for brevity...
+
+                public abstract String getVehicleType();
+            }
         }
