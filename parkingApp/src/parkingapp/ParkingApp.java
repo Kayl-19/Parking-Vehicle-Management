@@ -80,4 +80,15 @@ public class ParkingApp {
                 return false;
             }
 
+            public Vehicle[] toArray() {
+                Vehicle[] array = new Vehicle[size];
+                Node current = head;
+                int index = 0;
+                while (current != null) {
+                    array[index++] = current.data;
+                    current = current.next;
+                }
+                return array;
+            }
+
         }
