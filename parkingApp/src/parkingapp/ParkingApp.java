@@ -91,4 +91,16 @@ public class ParkingApp {
                 return array;
             }
 
+            public Vehicle search(String query) {
+                Node current = head;
+                while (current != null) {
+                    if (current.data.getPlateNumber().equalsIgnoreCase(query)
+                            || current.data.getSpotId().equalsIgnoreCase(query)) {
+                        return current.data;
+                    }
+                    current = current.next;
+                }
+                return null;
+            }
+
         }
