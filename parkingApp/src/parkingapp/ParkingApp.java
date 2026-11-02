@@ -135,4 +135,16 @@ abstract class Vehicle {
                     return "Car";
                 }
             }
+
+            class Motorcycle extends Vehicle {
+
+                public Motorcycle(String plateNumber, String ownerName, String spotId, String notes) {
+                    super(plateNumber, ownerName, spotId, notes);
+                }
+
+                @Override
+                public String getVehicleType() {
+                    return "Motorcycle";
+                }
+            }
         }
