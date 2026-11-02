@@ -3,13 +3,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-// ============================================================================
-// IT21: OOP DOMAIN MODELS (Parent & Child Classes)
-// ============================================================================
-/**
- * Base abstract class representing a parked vehicle. Enforces encapsulation
- * with private attributes and controlled access.
- */
 abstract class Vehicle {
 
     private String plateNumber;
@@ -59,9 +52,6 @@ abstract class Vehicle {
     public abstract String getVehicleType();
 }
 
-/**
- * Child Class 1: Car representing standard 4-wheel passenger vehicles.
- */
 class Car extends Vehicle {
 
     public Car(String plateNumber, String ownerName, String spotId, String notes) {
@@ -74,9 +64,6 @@ class Car extends Vehicle {
     }
 }
 
-/**
- * Child Class 2: Motorcycle representing 2-wheel vehicles.
- */
 class Motorcycle extends Vehicle {
 
     public Motorcycle(String plateNumber, String ownerName, String spotId, String notes) {
@@ -89,10 +76,6 @@ class Motorcycle extends Vehicle {
     }
 }
 
-/**
- * Child Class 3: Dynamic Custom Vehicle type allowing user-defined vehicle
- * categories.
- */
 class CustomVehicle extends Vehicle {
 
     private String customType;
@@ -108,12 +91,6 @@ class CustomVehicle extends Vehicle {
     }
 }
 
-// ============================================================================
-// IT20: DATA STRUCTURES & SEARCHING ALGORITHM (No java.util)
-// ============================================================================
-/**
- * Node wrapper for Doubly Linked List element.
- */
 class Node {
 
     Vehicle data;
@@ -127,32 +104,18 @@ class Node {
     }
 }
 
-/**
- * Custom Doubly Linked List implementation for IT20 (Data Structures &
- * Algorithms). Built completely from scratch without using any java.util
- * collection frameworks. Manages dynamic memory using bidirectional node
- * references (head and tail pointers).
- */
 class CustomDoublyLinkedList {
 
     private Node head;
     private Node tail;
     private int size;
 
-    /**
-     * Constructs an empty CustomDoublyLinkedList.
-     */
     public CustomDoublyLinkedList() {
         this.head = null;
         this.tail = null;
         this.size = 0;
     }
 
-    /**
-     * Appends a new Vehicle node to the end of the list. Time Complexity: O(1)
-     *
-     * @param vehicle Vehicle record to add
-     */
     public void add(Vehicle vehicle) {
         Node newNode = new Node(vehicle);
         if (head == null) {
@@ -166,13 +129,6 @@ class CustomDoublyLinkedList {
         size++;
     }
 
-    /**
-     * Removes a vehicle matching the plate number and adjusts node links. Time
-     * Complexity: O(n)
-     *
-     * @param plateNumber Target plate number to remove
-     * @return true if removed, false otherwise
-     */
     public boolean removeByPlate(String plateNumber) {
         if (head == null || plateNumber == null || plateNumber.trim().isEmpty()) {
             return false;
@@ -203,13 +159,6 @@ class CustomDoublyLinkedList {
         return false;
     }
 
-    /**
-     * IT20 Searching Algorithm: Performs a manual linear search across node
-     * pointers. Time Complexity: O(n)
-     *
-     * @param query Term matching plate, spot ID, owner, or vehicle type
-     * @return Vehicle if match found, null otherwise
-     */
     public Vehicle search(String query) {
         if (head == null || query == null || query.trim().isEmpty()) {
             return null;
@@ -231,11 +180,6 @@ class CustomDoublyLinkedList {
         return null;
     }
 
-    /**
-     * Converts linked node data to an array for GUI display.
-     *
-     * @return Vehicle array containing all records
-     */
     public Vehicle[] toArray() {
         Vehicle[] array = new Vehicle[size];
         Node current = head;
@@ -252,9 +196,6 @@ class CustomDoublyLinkedList {
     }
 }
 
-// ============================================================================
-// GUI & APPLICATION CONTROLLER (Java Swing)
-// ============================================================================
 public class ParkingApp extends JFrame {
 
     private CustomDoublyLinkedList parkingList;
@@ -269,7 +210,6 @@ public class ParkingApp extends JFrame {
     public ParkingApp() {
         parkingList = new CustomDoublyLinkedList();
 
-        // Seed Initial Records
         parkingList.add(new Car("ABC-1234", "John Doe", "A-01", "Sedan - Blue"));
         parkingList.add(new Motorcycle("XYZ-9876", "Jane Smith", "B-12", "150cc Helmet Included"));
         parkingList.add(new CustomVehicle("TRK-5555", "Mark Wilson", "C-09", "Truck", "Heavy Duty"));
@@ -280,7 +220,6 @@ public class ParkingApp extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));
 
-        // --- TOP PANEL: Search Control ---
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
         searchPanel.setBorder(BorderFactory.createTitledBorder("Search Vehicle (IT20 Manual Linear Search)"));
 
@@ -299,7 +238,6 @@ public class ParkingApp extends JFrame {
 
         add(searchPanel, BorderLayout.NORTH);
 
-        // --- WEST PANEL: Input Form ---
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBorder(BorderFactory.createTitledBorder("Park New Vehicle"));
         GridBagConstraints gbc = new GridBagConstraints();
@@ -359,13 +297,11 @@ public class ParkingApp extends JFrame {
 
         add(formPanel, BorderLayout.WEST);
 
-        // --- CENTER PANEL: Table Display ---
         String[] columns = {"Plate Number", "Owner Name", "Spot ID", "Type", "Notes / Details"};
         tableModel = new DefaultTableModel(columns, 0);
         tableRecords = new JTable(tableModel);
         add(new JScrollPane(tableRecords), BorderLayout.CENTER);
 
-        // --- EVENT HANDLING ---
         cbType.addActionListener(e -> {
             String selected = (String) cbType.getSelectedItem();
             if (selected != null && selected.equals("+ Add New Type...")) {
@@ -379,7 +315,6 @@ public class ParkingApp extends JFrame {
         btnSearch.addActionListener(e -> performSearch());
         btnResetSearch.addActionListener(e -> refreshTableData(parkingList.toArray()));
 
-        // Initial Table Load
         refreshTableData(parkingList.toArray());
     }
 
@@ -426,7 +361,6 @@ public class ParkingApp extends JFrame {
         String selectedType = (String) cbType.getSelectedItem();
         String notes = txtNotes.getText().trim();
 
-        // Validation Checks
         if (selectedType == null || selectedType.equals("+ Add New Type...")) {
             JOptionPane.showMessageDialog(this, "Please select or add a valid vehicle type.", "Validation Error", JOptionPane.ERROR_MESSAGE);
             return;
