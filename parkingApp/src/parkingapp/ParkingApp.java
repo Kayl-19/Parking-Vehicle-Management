@@ -34,30 +34,12 @@ public class ParkingApp {
                 private Node tail;
                 private int size;
 
-                public CustomDoublyLinkedList() {
-                    this.head = null;
-                    this.tail = null;
-                    this.size = 0;
-                }
+                public void add(Vehicle vehicle) {
+                
+            
 
-                public int getSize() {
-                    return size;
-                }
-            }
-
-            public void add(Vehicle vehicle) {
-                Node newNode = new Node(vehicle);
-                if (head == null) {
-                    head = newNode;
-                    tail = newNode;
-                } else {
-                    tail.next = newNode;
-                    newNode.prev = tail;
-                    tail = newNode;
-                }
-                size++;
-            }
-
+            ... }
+}
             public boolean removeByPlate(String plateNumber) {
                 if (head == null || plateNumber == null || plateNumber.trim().isEmpty()) {
                     return false;
