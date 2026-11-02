@@ -221,7 +221,7 @@ public class ParkingApp extends JFrame {
         setLayout(new BorderLayout(10, 10));
 
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
-        searchPanel.setBorder(BorderFactory.createTitledBorder("Search Vehicle (IT20 Manual Linear Search)"));
+        searchPanel.setBorder(BorderFactory.createTitledBorder("Parking-Vehicle-Management"));
 
         searchPanel.add(new JLabel("Plate / Spot / Owner / Type:"));
         txtSearch = new JTextField(15);
