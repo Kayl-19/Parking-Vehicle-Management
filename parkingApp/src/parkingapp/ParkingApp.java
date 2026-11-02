@@ -59,19 +59,27 @@ public class ParkingApp {
             }
 
             public boolean removeByPlate(String plateNumber) {
+                if (head == null || plateNumber == null || plateNumber.trim().isEmpty()) {
+                    return false;
+                }
+
                 Node current = head;
                 while (current != null) {
-                    if (current.data.getPlateNumber().equalsIgnoreCase(plateNumber)) {
+                    if (current.data != null && current.data.getPlateNumber() != null
+                            && current.data.getPlateNumber().equalsIgnoreCase(plateNumber.trim())) {
+
                         if (current.prev != null) {
                             current.prev.next = current.next;
                         } else {
-                            head = current.next; // Head update
+                            head = current.next;
                         }
+
                         if (current.next != null) {
                             current.next.prev = current.prev;
                         } else {
-                            tail = current.prev; // Tail update
+                            tail = current.prev;
                         }
+
                         size--;
                         return true;
                     }
@@ -80,28 +88,28 @@ public class ParkingApp {
                 return false;
             }
 
-            public Vehicle[] toArray() {
-                Vehicle[] array = new Vehicle[size];
-                Node current = head;
-                int index = 0;
-                while (current != null) {
-                    array[index++] = current.data;
-                    current = current.next;
-                }
-                return array;
-            }
-
             public Vehicle search(String query) {
+
+                if (head == null || query == null || query.trim().isEmpty()) {
+                    return null;
+                }
+
+                String cleanQuery = query.trim();
                 Node current = head;
                 while (current != null) {
-                    if (current.data.getPlateNumber().equalsIgnoreCase(query)
-                            || current.data.getSpotId().equalsIgnoreCase(query)) {
-                        return current.data;
+                    if (current.data != null) {
+                        if ((current.data.getPlateNumber() != null && current.data.getPlateNumber().equalsIgnoreCase(cleanQuery))
+                                || (current.data.getSpotId() != null && current.data.getSpotId().equalsIgnoreCase(cleanQuery))
+                                || (current.data.getOwnerName() != null && current.data.getOwnerName().equalsIgnoreCase(cleanQuery))
+                                || (current.data.getVehicleType() != null && current.data.getVehicleType().equalsIgnoreCase(cleanQuery))) {
+                            return current.data;
+                        }
                     }
                     current = current.next;
                 }
                 return null;
             }
+
         
     
 
