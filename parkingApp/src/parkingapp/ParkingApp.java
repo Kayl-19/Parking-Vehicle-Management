@@ -154,24 +154,41 @@ package parkingapp;
             }
         }
 
-        private void addRecord() {
-            String plate = txtPlate.getText().trim();
-            String owner = txtOwner.getText().trim();
-            String spot = txtSpot.getText().trim();
-            String selectedType = (String) cbType.getSelectedItem();
-            String notes = txtNotes.getText().trim();
+        // Added in Commit 10: Input validation popups
+    private void addRecord() {
+        String plate = txtPlate.getText().trim();
+        String owner = txtOwner.getText().trim();
+        String spot = txtSpot.getText().trim();
+        String selectedType = (String) cbType.getSelectedItem();
+        String notes = txtNotes.getText().trim();
 
-            if (selectedType.equals("Car")) {
-                parkingList.add(new Car(plate, owner, spot, notes));
-            } else if (selectedType.equals("Motorcycle")) {
-                parkingList.add(new Motorcycle(plate, owner, spot, notes));
-            } else {
-                parkingList.add(new CustomVehicle(plate, owner, spot, selectedType, notes));
-            }
-
-            refreshTableData(parkingList.toArray());
-            clearInputs();
+        if (selectedType == null || selectedType.equals("+ Add New Type...")) {
+            JOptionPane.showMessageDialog(this, "Please select or add a valid vehicle type.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
+
+        if (plate.isEmpty() || owner.isEmpty() || spot.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Plate Number, Owner Name, and Spot ID are required.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (notes.isEmpty()) {
+            notes = "N/A";
+        }
+
+        if (selectedType.equals("Car")) {
+            parkingList.add(new Car(plate, owner, spot, notes));
+        } else if (selectedType.equals("Motorcycle")) {
+            parkingList.add(new Motorcycle(plate, owner, spot, notes));
+        } else {
+            parkingList.add(new CustomVehicle(plate, owner, spot, selectedType, notes));
+        }
+
+        refreshTableData(parkingList.toArray());
+        clearInputs();
+        lblStatus.setText(" Status: Parked " + selectedType + " (" + plate + ")");
+        lblStatus.setForeground(new Color(0, 128, 0));
+    }
 
         private void deleteRecord() {
             int selectedRow = tableRecords.getSelectedRow();
