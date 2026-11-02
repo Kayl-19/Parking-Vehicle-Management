@@ -11,75 +11,142 @@ package parkingapp;
 // Added in Commit 6: Declare input form components and fields
   
 
-    public class ParkingApp extends JFrame {
+    // Added in Commit 8: Buttons, table setup, and record addition/deletion handlers
+public class ParkingApp extends JFrame {
+    private CustomDoublyLinkedList parkingList;
 
-        private CustomDoublyLinkedList parkingList;
+    private JTextField txtPlate, txtOwner, txtSpot, txtNotes, txtSearch;
+    private JComboBox<String> cbType;
+    private DefaultComboBoxModel<String> typeModel;
+    private JLabel lblStatus;
+    private JTable tableRecords;
+    private DefaultTableModel tableModel;
 
-        private JTextField txtPlate, txtOwner, txtSpot, txtNotes, txtSearch;
-        private JComboBox<String> cbType;
-        private DefaultComboBoxModel<String> typeModel;
-        private JLabel lblStatus;
-        private JTable tableRecords;
-        private DefaultTableModel tableModel;
+    public ParkingApp() {
+        parkingList = new CustomDoublyLinkedList();
 
-        public ParkingApp() {
-            parkingList = new CustomDoublyLinkedList();
+        setTitle("Parking Vehicle Management System");
+        setSize(880, 620);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new BorderLayout(10, 10));
 
-            setTitle("Parking Vehicle Management System");
-            setSize(880, 620);
-            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            setLocationRelativeTo(null);
-            setLayout(new BorderLayout(10, 10));
+        // West Form Panel
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBorder(BorderFactory.createTitledBorder("Park New Vehicle"));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-            // --- WEST PANEL: Form Inputs (GridBagLayout) ---
-            JPanel formPanel = new JPanel(new GridBagLayout());
-            formPanel.setBorder(BorderFactory.createTitledBorder("Park New Vehicle"));
-            GridBagConstraints gbc = new GridBagConstraints();
-            gbc.insets = new Insets(5, 5, 5, 5);
-            gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0; gbc.gridy = 0;
+        formPanel.add(new JLabel("Plate Number:"), gbc);
+        gbc.gridx = 1;
+        txtPlate = new JTextField(12);
+        formPanel.add(txtPlate, gbc);
 
-            gbc.gridx = 0;
-            gbc.gridy = 0;
-            formPanel.add(new JLabel("Plate Number:"), gbc);
-            gbc.gridx = 1;
-            txtPlate = new JTextField(12);
-            formPanel.add(txtPlate, gbc);
+        gbc.gridx = 0; gbc.gridy = 1;
+        formPanel.add(new JLabel("Owner Name:"), gbc);
+        gbc.gridx = 1;
+        txtOwner = new JTextField(12);
+        formPanel.add(txtOwner, gbc);
 
-            gbc.gridx = 0;
-            gbc.gridy = 1;
-            formPanel.add(new JLabel("Owner Name:"), gbc);
-            gbc.gridx = 1;
-            txtOwner = new JTextField(12);
-            formPanel.add(txtOwner, gbc);
+        gbc.gridx = 0; gbc.gridy = 2;
+        formPanel.add(new JLabel("Spot ID:"), gbc);
+        gbc.gridx = 1;
+        txtSpot = new JTextField(12);
+        formPanel.add(txtSpot, gbc);
 
-            gbc.gridx = 0;
-            gbc.gridy = 2;
-            formPanel.add(new JLabel("Spot ID:"), gbc);
-            gbc.gridx = 1;
-            txtSpot = new JTextField(12);
-            formPanel.add(txtSpot, gbc);
+        gbc.gridx = 0; gbc.gridy = 3;
+        formPanel.add(new JLabel("Vehicle Type:"), gbc);
+        gbc.gridx = 1;
+        typeModel = new DefaultComboBoxModel<>(new String[]{"Car", "Motorcycle", "Truck", "+ Add New Type..."});
+        cbType = new JComboBox<>(typeModel);
+        formPanel.add(cbType, gbc);
 
-            gbc.gridx = 0;
-            gbc.gridy = 3;
-            formPanel.add(new JLabel("Vehicle Type:"), gbc);
-            gbc.gridx = 1;
-            typeModel = new DefaultComboBoxModel<>(new String[]{"Car", "Motorcycle", "Truck", "+ Add New Type..."});
-            cbType = new JComboBox<>(typeModel);
-            formPanel.add(cbType, gbc);
+        gbc.gridx = 0; gbc.gridy = 4;
+        formPanel.add(new JLabel("Notes/Details:"), gbc);
+        gbc.gridx = 1;
+        txtNotes = new JTextField(12);
+        formPanel.add(txtNotes, gbc);
 
-            gbc.gridx = 0;
-            gbc.gridy = 4;
-            formPanel.add(new JLabel("Notes/Details:"), gbc);
-            gbc.gridx = 1;
-            txtNotes = new JTextField(12);
-            formPanel.add(txtNotes, gbc);
+        gbc.gridx = 0; gbc.gridy = 5; gbc.gridwidth = 2;
+        JButton btnAdd = new JButton("Park Vehicle");
+        formPanel.add(btnAdd, gbc);
 
-            add(formPanel, BorderLayout.WEST);
+        gbc.gridy = 6;
+        JButton btnDelete = new JButton("Unpark Selected/Plate");
+        formPanel.add(btnDelete, gbc);
 
-            lblStatus = new JLabel(" Status: Ready");
-            lblStatus.setFont(new Font("SansSerif", Font.BOLD, 12));
-            add(lblStatus, BorderLayout.SOUTH);
+        add(formPanel, BorderLayout.WEST);
+
+        // Center Panel: JTable setup
+        String[] columns = {"Plate Number", "Owner Name", "Spot ID", "Type", "Notes / Details"};
+        tableModel = new DefaultTableModel(columns, 0);
+        tableRecords = new JTable(tableModel);
+        add(new JScrollPane(tableRecords), BorderLayout.CENTER);
+
+        lblStatus = new JLabel(" Status: Ready");
+        lblStatus.setFont(new Font("SansSerif", Font.BOLD, 12));
+        add(lblStatus, BorderLayout.SOUTH);
+
+        // Event Listeners for Commit 8
+        btnAdd.addActionListener(e -> addRecord());
+        btnDelete.addActionListener(e -> deleteRecord());
+
+        refreshTableData(parkingList.toArray());
+    }
+
+    private void refreshTableData(Vehicle[] vehicles) {
+        tableModel.setRowCount(0);
+        for (Vehicle v : vehicles) {
+            tableModel.addRow(new Object[]{
+                v.getPlateNumber(),
+                v.getOwnerName(),
+                v.getSpotId(),
+                v.getVehicleType(),
+                v.getNotes()
+            });
         }
+    }
+
+    private void addRecord() {
+        String plate = txtPlate.getText().trim();
+        String owner = txtOwner.getText().trim();
+        String spot = txtSpot.getText().trim();
+        String selectedType = (String) cbType.getSelectedItem();
+        String notes = txtNotes.getText().trim();
+
+        if (selectedType.equals("Car")) {
+            parkingList.add(new Car(plate, owner, spot, notes));
+        } else if (selectedType.equals("Motorcycle")) {
+            parkingList.add(new Motorcycle(plate, owner, spot, notes));
+        } else {
+            parkingList.add(new CustomVehicle(plate, owner, spot, selectedType, notes));
+        }
+
+        refreshTableData(parkingList.toArray());
+        clearInputs();
+    }
+
+    private void deleteRecord() {
+        int selectedRow = tableRecords.getSelectedRow();
+        String plateToRemove = (selectedRow != -1) ? tableModel.getValueAt(selectedRow, 0).toString() : txtPlate.getText().trim();
+        parkingList.removeByPlate(plateToRemove);
+        refreshTableData(parkingList.toArray());
+        clearInputs();
+    }
+
+    private void clearInputs() {
+        txtPlate.setText("");
+        txtOwner.setText("");
+        txtSpot.setText("");
+        txtNotes.setText("");
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new ParkingApp().setVisible(true));
+    }
+}
 
         public static void main(String[] args) {
             SwingUtilities.invokeLater(() -> new ParkingApp().setVisible(true));
