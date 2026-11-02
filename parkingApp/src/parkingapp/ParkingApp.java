@@ -58,4 +58,14 @@ public class ParkingApp {
                 size++;
             }
 
-        }
+            public boolean removeByPlate(String plateNumber) {
+                Node current = head;
+                while (current != null) {
+                    if (current.data.getPlateNumber().equalsIgnoreCase(plateNumber)) {
+                        if (current.prev != null) {
+                            current.prev.next = current.next;
+                        } else {
+                            head = current.next; // Head update
+                        }
+
+                    }
